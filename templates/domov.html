@@ -1,8 +1,29 @@
-{% extends "objave.html" %}
-
-{% block content %}
-    <h1>Živjo, {{ user.username }}!</h1>
-    {% for post in posts %}
-    <div><p>{{ post.author.username }} pravi: <strong>{{ post.body }}</strong></p></div>
-    {% endfor %}
-{% endblock %}
+<!DOCTYPE html>
+<!--suppress HtmlUnknownTarget -->
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    {% if title %}
+    <title>{{ title }} - Microblog</title>
+    {% else %}
+    <title>Welcome to Microblog</title>
+    {% endif %}
+</head>
+<body>
+    <div>
+        Microblog:
+        <a href="{{ url_for('domov') }}">Home</a>
+        <a href="{{ url_for('login') }}">Vpis</a>
+    </div>
+    {% with messages = get_flashed_messages () %}
+    {% if messages %}
+    <ul>
+        {% for messages in messages %}
+        <li>{{ messages }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</body>
+</html>

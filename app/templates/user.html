@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <table>
+        <tr>
+            <td><img src="{{ user.avatar(128) }}"></td>
+            <td><h1>{{user.uporabnisko_ime}}</h1></td>
+        </tr>
+    </table>
+    <hr>
+    {% for post in posts %}
+        {% include '_kategorija.html' %}
+    {% endfor %}
+{% endblock %}

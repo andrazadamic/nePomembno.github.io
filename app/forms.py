@@ -23,7 +23,7 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Prosimo uporabite drugo uporabniško ime.')
 
 
-    def validate_username(self, email):
+    def validate_email(self, email):
         user = Uporabniki.query.filter_by(e_naslov=email.data).first()
         if user is not None:
             raise ValidationError('Prosimo uporabite drugačen elektronski naslov.')

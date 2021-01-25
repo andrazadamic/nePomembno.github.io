@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="ne_pomembno.db" uuid="6153dd2f-6bea-4491-a702-8cd747e74c19">
+    <data-source source="LOCAL" name="ne_pomembno.db" uuid="f5b49f14-44a3-4471-a0ba-8afc23f77e90">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>

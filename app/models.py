@@ -1,7 +1,8 @@
 from app import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 from hashlib import md5
+
 
 class Uporabniki(UserMixin, db.Model):
     id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
@@ -32,19 +33,38 @@ def load_user(user_id):
 
 class Kategorije(db.Model):
     id_kategorije = db.Column(db.INTEGER, primary_key=True, autoincrement=True, nullable=False)
-    ime_kategorije = db.Column(db.String(50), index=True, nullable=False)
+    ime_kategorije = db.Column(db.String(50), index=True)
     id_uporabnika = db.Column(db.INTEGER, db.ForeignKey('uporabniki.id'))
     vrednosti = db.relationship('Vrednosti', backref='kategorija')
 
     def __repr__(self):
-        return '<Kategorija {}>'.format(self.ime_kategorije)
+        return '<{}. {}>'.format(self.id_kategorije, self.ime_kategorije)
+
+    def __init__(self, ime_kategorije, id_uporabnika):
+        self.ime_kategorije = ime_kategorije
+        self.id_uporabnika = id_uporabnika
+
+
+def kategorije_query():
+    uporabnik = Uporabniki.query.filter_by(uporabnisko_ime=current_user.uporabnisko_ime).first()
+    return Kategorije.query.filter_by(id_uporabnika=uporabnik.id)
+
+
+def kategorije_query2(form_data):
+    kategorija = Kategorije.query.filter_by(ime_kategorije=form_data).first()
+    return kategorija.id_kategorije
 
 
 class Vrednosti(db.Model):
     id_vrednosti = db.Column(db.INTEGER, primary_key=True, autoincrement=True, nullable=False)
-    naziv = db.Column(db.String(50), index=True, nullable=False)
-    vrednost = db.Column(db.String(50), index=True, nullable=False)
+    naziv = db.Column(db.String(50), index=True)
+    vrednost = db.Column(db.String(50), index=True)
     id_kategorije = db.Column(db.INTEGER, db.ForeignKey('kategorije.id_kategorije'))
 
     def __repr__(self):
-        return '<Naziv: {} - {}>'.format(self.naziv, self.vrednost)
+        return '<{}: {} - {}>'.format(self.id_kategorije, self.naziv, self.vrednost)
+
+    def __init__(self, naziv, vrednost, id_kategorije):
+        self.naziv = naziv
+        self.vrednost = vrednost
+        self.id_kategorije = id_kategorije

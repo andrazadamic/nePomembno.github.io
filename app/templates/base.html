@@ -1,51 +1,153 @@
 <!DOCTYPE html>
 <!--suppress HtmlUnknownTarget -->
 <html lang="sl">
-<head>
-    <meta charset="UTF-8">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <link href="css/style.css" type="text/css">
-    {% if title %}
-    <title>{{ title }} - Microblog</title>
-    {% else %}
-    <title>Welcome to Microblog</title>
-    {% endif %}
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="#">nePomembno</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                      <div class="navbar-nav">
-                            <a class="nav-link active" aria-current="page" href="{{ url_for('index') }}">Domov</a>
-                            {% if current_user_is_anonymous %}
-                            <a class="nav-link active" aria-current="page" href="{{ url_for('login') }}">Vpis</a>
-                            {% else %}
-                            <a class="nav-link active" aria-current="page" href="{{ url_for('user', username=current_user.uporabnisko_ime) }}">Profil</a>
-                            <a class="nav-link active" aria-current="page" href="{{ url_for('logout') }}">Izpis</a>
-                            {% endif %}
-                      </div>
-                </div>
-              </div>
-        </nav>
-    </header>
-    <article>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    </article>
-    {% with messages = get_flashed_messages () %}
-    {% if messages %}
-    <ul>
-        {% for messages in messages %}
-        <li>{{ messages }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-    {% block content %}{% endblock %}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
-</body>
+		<title>nePomembno - dev</title>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+		<link rel="stylesheet" href="{{ url_for('static',filename='base.css') }}">
+	</head>
+	<body>
+		 <div class="grid-container">
+		   	<div class="menu-icon">
+				<i class="fas fa-bars header__menu"></i>
+		  	</div>
+
+		  	<header class="header">
+				<div class="search-field">
+					<input class="header__search" type="text" placeholder="Iskanje" onkeyup="searchValues()">
+					<a id="addValueBtn" class="btn btn-dark" onclick="addValue()">+</a>
+				</div>
+
+				<div class="header__buttons">
+					<a class="btn btn-dark" href="{{ url_for('logout') }}">Izpis</a>
+					<!--<button type="button" class="btn btn-dark" disabled>Uredi</button>
+					<button type="button" class="btn btn-dark">Izbriši</button>-->
+				</div>
+		  	</header>
+		  	<aside class="sidenav">
+				<ul class="sidenav__list">
+			  		<li class="sidenav__list-item">Vsi vnosi</li>
+					<li class="sidenav__list-item">Priljubljeni</li>
+					<li class="sidenav__list-item">Izbrisani</li>
+				</ul>
+				<ul class="sidenav__list">
+					{% for kategorija in kategorije %}
+						<li class="sidenav__list-item">{{ kategorija.ime_kategorije }}</li>
+					{% endfor %}
+				</ul>
+
+				<div class="add_category">
+					<a id="addCategoryBtn" class="btn btn-dark" onclick="addCategory()">Dodaj kategorijo</a>
+				</div>
+		  	</aside>
+
+		  	<main class="main">
+				{% block content %}{% endblock %}
+
+				<!-- Custom alert (addValue) -->
+				<div id="addValue" class="modal">
+					<div class="modal-content">
+						<span class="close">&times;</span>
+						<form action="" method="post">
+							{{ form2.hidden_tag() }}
+							<p>
+								{{ form2.naziv.label }}<br>
+								{{ form2.naziv(size=32) }}<br>
+								{% for error in form2.naziv.errors %}
+								<span style="color: red">[{{ error }}]</span>
+								{% endfor %}
+							</p>
+							<p>
+								{{ form2.vrednost.label }}<br>
+								{{ form2.vrednost(size=32) }}<br>
+								{% for error in form2.vrednost.errors %}
+								<span style="color: red">[{{ error }}]</span>
+								{% endfor %}
+							</p>
+							<p>
+								{{ form2.kategorija.label }}<br>
+								{{ form2.kategorija }}<br>
+								{% for error in form2.vrednost.errors %}
+								<span style="color: red">[{{ error }}]</span>
+								{% endfor %}
+							</p>
+							<p>{{ form2.submit() }}</p>
+						</form>
+					</div>
+				</div>
+
+				<!-- Custom alert (addCategory) -->
+				<div id="addCategory" class="modal">
+					<div class="modal-content">
+						<span class="close">&times;</span>
+						<form action="" method="post">
+							{{ form.hidden_tag() }}
+							<p>
+								{{ form.ime.label }}<br>
+								{{ form.ime(size=32) }}<br>
+								{% for error in form.ime.errors %}
+								<span style="color: red">[{{ error }}]</span>
+								{% endfor %}
+							</p>
+							<p>{{ form.submit() }}</p>
+						</form>
+					</div>
+				</div>
+		  	</main>
+
+		  	<footer class="footer">
+				<div class="footer__copyright">&copy; 2018 MTH</div>
+				<div class="footer__signature">Made with love by pure genius</div>
+		  	</footer>
+		 </div>
+		<script>
+			function addValue() {
+				var addValue = document.getElementById("addValue");
+				var btn = document.getElementById("addValueBtn");
+				var close = document.getElementsByClassName("close")[0];
+
+				btn.onclick = function() {
+				    addValue.style.display = "block";
+				}
+
+				close.onclick = function() {
+					addValue.style.display = "none";
+				}
+
+				window.onclick = function(event) {
+				  	if (event.target == addValue) {
+						addValue.style.display = "none";
+				  	}
+				}
+			}
+			function addCategory() {
+				var addCategory = document.getElementById("addCategory");
+				var btn = document.getElementById("addCategoryBtn");
+				var close = document.getElementsByClassName("close")[1];
+
+				btn.onclick = function() {
+				    addCategory.style.display = "block";
+				}
+
+				close.onclick = function() {
+					addValue.style.display = "none";
+				}
+
+				window.onclick = function(event) {
+				  	if (event.target == addCategory) {
+						addValue.style.display = "none";
+				  	}
+				}
+			}
+			function searchValues() {
+
+			}
+		</script>
+
+
+    	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+	</body>
 </html>

@@ -17,10 +17,9 @@ naming_convention = {
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app, metadata=MetaData(naming_convention))
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, render_as_batch=True)
 login = LoginManager(app)
 login.login_view = 'login'
-migrate = Migrate(app, db, render_as_batch=True)
 
 from app import routes, models
 

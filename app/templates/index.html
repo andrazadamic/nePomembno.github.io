@@ -6,9 +6,8 @@
             <div class="col" id="containerLeft">
                 {% for vrednost in vrednosti %}
                     <a href="#">
-                        <img>
                         <div>
-                            {{ vrednost.naziv }}, {{ vrednost.vrednost }}
+                            <i class="bi bi-caret-right-square-fill"></i>{{ vrednost.naziv }}, {{ vrednost.vrednost }}
                         </div>
                     </a>
                 {% endfor %}

@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   color: #fff;
-  font-family: 'Open Sans', Helvetica, sans-serif;
+  font-family: 'Montserrat', sans-serif;
   box-sizing: border-box;
 }
 
@@ -146,6 +146,11 @@ aside {
 .sidenav__list-item:hover {
   background-color: rgba(255, 255, 255, 0.2);
   cursor: pointer;
+}
+
+.align_right {
+    float: right;
+    margin-right: 2%;
 }
 
 .add_category {

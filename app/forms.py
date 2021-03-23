@@ -8,8 +8,7 @@ from app.models import Uporabniki, kategorije_query, kategorije_query2
 class LoginForm(FlaskForm):
     username = StringField('Uporabniško ime', validators=[DataRequired()])
     password = PasswordField('Geslo', validators=[DataRequired()])
-    remember_me = BooleanField('Zapomni si me')
-    submit = SubmitField('login')
+    submit = SubmitField('PRIJAVA')
 
 
 class RegistrationForm(FlaskForm):
@@ -18,7 +17,7 @@ class RegistrationForm(FlaskForm):
     password = PasswordField('Geslo', validators=[DataRequired()])
     password2 = PasswordField(
         'Ponovi geslo', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Registracija')
+    submit = SubmitField('REGISTRACIJA')
 
     def validate_username(self, username):
         user = Uporabniki.query.filter_by(uporabnisko_ime=username.data).first()

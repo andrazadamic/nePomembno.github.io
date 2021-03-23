@@ -13,12 +13,18 @@ def index():
     uporabnik = Uporabniki.query.filter_by(uporabnisko_ime=current_user.uporabnisko_ime).first()
     kategorije_all = Kategorije.query.filter_by(id_uporabnika=uporabnik.id).all()
     kategorije_id = []
+    vrednosti = []
+    kategorije_count = []
+
     for kategorija in kategorije_all:
         kategorije_id.append(kategorija.id_kategorije)
+        kategorije_count.append(Vrednosti.query.filter_by(id_kategorije=kategorija.id_kategorije).count())
     for vrednost in kategorije_id:
         temp_vrednost = Vrednosti.query.filter_by(id_kategorije=vrednost).all()
         if temp_vrednost:
-            vrednosti = list(temp_vrednost)
+            vrednosti = vrednosti + list(temp_vrednost)
+            vrednosti_count = len(vrednosti)
+
     form = InputKategorijaForm()
     if form.validate_on_submit():
         kategorija = Kategorije(ime_kategorije=form.ime.data, id_uporabnika=uporabnik.id)
@@ -42,7 +48,13 @@ def index():
         db.session.commit()
         return redirect(url_for('index'))
     return render_template('index.html', title='Domov', form=form, form2=form2, kategorije=kategorije_all,
-                           vrednosti=vrednosti)
+                           vrednosti=vrednosti, kategorije_count=kategorije_count, kategorije_len=len(kategorije_count),
+                           vrednosti_count=vrednosti_count)
+
+
+def filter_kategorija(id):
+    vrednosti = Vrednosti.query.filter_by(id_kategorije=kategorija.id_kategorije).all()
+    return vrednosti
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -55,7 +67,7 @@ def login():
         if user is None or not user.check_password(form2.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
-        login_user(user, remember=form2.remember_me.data)
+        login_user(user)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')

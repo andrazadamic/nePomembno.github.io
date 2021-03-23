@@ -1,37 +1,42 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="sl">
+    <head>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="{{ url_for('static',filename='login-register.css') }}">
+    </head>
+    <body>
 
-{% block content %}
-    <h1>Registracija</h1>
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}<br>
-            {% for error in form.username.errors %}
-            <span style="color: red">[{{ error }}]</span>
-            {% endfor %}}
-        </p>
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32) }}<br>
-            {% for error in form.email.errors %}
-            <span style="color: red">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}<br>
-            {% for error in form.password.errors %}
-            <span style="color: red">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password2.label }}<br>
-            {{ form.password2(size=32) }}<br>
-            {% for error in form.password2.errors %}
-            <span style="color: red">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-{% endblock %}
+    </body>
+</html>
+    <div>
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.username(size=32, class_="login-form", placeholder="Uporabniško ime") }}<br>
+                {% for error in form.username.errors %}
+                <span style="color: red">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.email(size=32, class_="login-form", placeholder="Elektronski naslov") }}<br>
+                {% for error in form.email.errors %}
+                <span style="color: red">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.password(size=32, class_="login-form", placeholder="Geslo") }}<br>
+                {% for error in form.password.errors %}
+                <span style="color: red">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.password2(size=32, class_="login-form", placeholder="Ponovi geslo") }}<br>
+                {% for error in form.password2.errors %}
+                <span style="color: red">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ form.submit(class_="btn btn-dark") }}</p>
+        </form>
+    </div>

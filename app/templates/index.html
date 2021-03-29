@@ -6,8 +6,9 @@
             <div class="col" id="containerLeft">
                 {% for vrednost in vrednosti %}
                     <a href="#">
-                        <div>
-                            <i class="bi bi-caret-right-square-fill"></i>{{ vrednost.naziv }}, {{ vrednost.vrednost }}
+                        <div class="vrednost">
+                            <img src="{{ url_for('static', filename='icons/black/car.png') }}" width="55" height="20" alt="ikona">
+                            {{ vrednost.naziv }}, {{ vrednost.vrednost }}
                         </div>
                     </a>
                 {% endfor %}
@@ -19,5 +20,3 @@
     </div>
 
 {% endblock %}
-
-

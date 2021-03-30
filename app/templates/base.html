@@ -61,10 +61,6 @@
 						</li></a>
 					{% endfor %}
 				</ul>
-
-				<div class="add_category">
-					<a id="addCategoryBtn" class="btn btn-dark" onclick="addCategory()">Dodaj kategorijo</a>
-				</div>
 		  	</aside>
 
 			 <main class="main">
@@ -74,43 +70,25 @@
 					<div class="modal-content">
 						<span class="close">&times;</span>
 						<form action="" method="post">
-							{{ form2.hidden_tag() }}
-							<p>
-								{{ form2.naziv.label }}<br>
-								{{ form2.naziv(size=32) }}<br>
-								{% for error in form2.naziv.errors %}
-								<span style="color: red">[{{ error }}]</span>
-								{% endfor %}
-							</p>
-							<p>
-								{{ form2.vrednost.label }}<br>
-								{{ form2.vrednost(size=32) }}<br>
-								{% for error in form2.vrednost.errors %}
-								<span style="color: red">[{{ error }}]</span>
-								{% endfor %}
-							</p>
-							<p>
-								{{ form2.kategorija.label }}<br>
-								{{ form2.kategorija }}<br>
-								{% for error in form2.vrednost.errors %}
-								<span style="color: red">[{{ error }}]</span>
-								{% endfor %}
-							</p>
-							<p>{{ form2.submit() }}</p>
-						</form>
-					</div>
-				</div>
-
-				<!-- Custom alert (addCategory) -->
-				<div id="addCategory" class="modal">
-					<div class="modal-content">
-						<span class="close">&times;</span>
-						<form action="" method="post">
 							{{ form.hidden_tag() }}
 							<p>
-								{{ form.ime.label }}<br>
-								{{ form.ime(size=32) }}<br>
-								{% for error in form.ime.errors %}
+								{{ form.naziv.label }}<br>
+								{{ form.naziv(size=32) }}<br>
+								{% for error in form.naziv.errors %}
+								<span style="color: red">[{{ error }}]</span>
+								{% endfor %}
+							</p>
+							<p>
+								{{ form.vrednost.label }}<br>
+								{{ form.vrednost(size=32) }}<br>
+								{% for error in form.vrednost.errors %}
+								<span style="color: red">[{{ error }}]</span>
+								{% endfor %}
+							</p>
+							<p>
+								{{ form.kategorija.label }}<br>
+								{{ form.kategorija }}<br>
+								{% for error in form.vrednost.errors %}
 								<span style="color: red">[{{ error }}]</span>
 								{% endfor %}
 							</p>
@@ -140,26 +118,7 @@
 				}
 
 				window.onclick = function(event) {
-				  	if (event.target == addValue) {
-						addValue.style.display = "none";
-				  	}
-				}
-			}
-			function addCategory() {
-				var addCategory = document.getElementById("addCategory");
-				var btn = document.getElementById("addCategoryBtn");
-				var close = document.getElementsByClassName("close")[1];
-
-				btn.onclick = function() {
-				    addCategory.style.display = "block";
-				}
-
-				close.onclick = function() {
-					addValue.style.display = "none";
-				}
-
-				window.onclick = function(event) {
-				  	if (event.target == addCategory) {
+				  	if (event.target === addValue) {
 						addValue.style.display = "none";
 				  	}
 				}

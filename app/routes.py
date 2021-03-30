@@ -1,6 +1,6 @@
 from app import app, db
 from flask import render_template, flash, redirect, url_for, request, jsonify
-from app.forms import LoginForm, RegistrationForm, InputVrednostForm, InputKategorijaForm
+from app.forms import LoginForm, RegistrationForm, InputVrednostForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import Uporabniki, Vrednosti, Kategorije
 from werkzeug.urls import url_parse
@@ -9,13 +9,14 @@ from werkzeug.urls import url_parse
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
-def index(*args):
+def index():
     uporabnik = Uporabniki.query.filter_by(uporabnisko_ime=current_user.uporabnisko_ime).first()
     kategorije_all = Kategorije.query.filter_by(id_uporabnika=uporabnik.id).all()
     kategorije_id = []
     vrednosti = []
     kategorije_count = []
     id = 'index'
+    vrednosti_count = 0
 
     for kategorija in kategorije_all:
         kategorije_id.append(kategorija.id_kategorije)
@@ -29,36 +30,16 @@ def index(*args):
             vrednosti = vrednosti + list(temp_vrednost)
             vrednosti_count = len(vrednosti)
 
-    form = InputKategorijaForm()
+    form = InputVrednostForm()
     if form.validate_on_submit():
-        kategorija = Kategorije(ime_kategorije=form.ime.data, id_uporabnika=uporabnik.id)
-        if Kategorije.query.filter_by(ime_kategorije=form.ime.data, id_uporabnika=uporabnik.id).first() is not None:
-            flash('Kategorija s tem imenom že obstaja! Izberite drugo ime!')
-            return redirect(url_for('index'))
-        db.session.add(kategorija)
-        db.session.commit()
-        flash('Uspešno ste dodali novo kategorijo!')
-        return redirect(url_for('index'))
-
-    form2 = InputVrednostForm()
-    if form2.validate_on_submit():
-        nova_vrednost = Vrednosti(naziv=form2.naziv.data, vrednost=form2.vrednost.data,
-                                  id_kategorije=form2.kategorija.data.id_kategorije)
-        # if Vrednosti.query.filter_by(naziv=form2.naziv.data,
-        # id_kategorije=kategorija_izbira.id_kategorije).first() is not None:
-        # flash('Vrednost že obstaja! Uredite obstoječo ali ustvarite novo vrednost!')
-        #  return redirect(url_for('index'))
+        nova_vrednost = Vrednosti(naziv=form.naziv.data, vrednost=form.vrednost.data,
+                                  id_kategorije=form.kategorija.data.id_kategorije)
         db.session.add(nova_vrednost)
         db.session.commit()
         return redirect(url_for('index'))
-    return render_template('index.html', title='Domov', form=form, form2=form2, kategorije=kategorije_all,
+    return render_template('index.html', title='Domov', form=form, kategorije=kategorije_all,
                            vrednosti=vrednosti, kategorije_count=kategorije_count, kategorije_len=len(kategorije_count),
                            vrednosti_count=vrednosti_count)
-
-
-def filter_kategorija(id):
-    vrednosti = Vrednosti.query.filter_by(id_kategorije=kategorija.id_kategorije).all()
-    return vrednosti
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -89,6 +70,12 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
+        uporabnik = Uporabniki.query.filter_by(uporabnisko_ime=form.username.data).first()
+        categories = ['Avto', 'Nakupovanje', 'Punca', 'Datumi', 'Šola', 'Trening', 'Delo', 'Osebni podatki']
+        for c in categories:
+            entry = Kategorije(c, id_uporabnika=uporabnik.id)
+            db.session.add(entry)
+        db.session.commit()
         flash('Registracija je bila uspešna!')
         return redirect(url_for('login'))
     return render_template('register.html', title='Registracija', form=form)
@@ -103,8 +90,6 @@ def logout():
 @app.route('/kategorija/<int:id>')
 @login_required
 def kategorija(id):
-
-
     uporabnik = Uporabniki.query.filter_by(uporabnisko_ime=current_user.uporabnisko_ime).first()
     kategorije_all = Kategorije.query.filter_by(id_uporabnika=uporabnik.id).all()
     kategorije_id = []
@@ -118,29 +103,43 @@ def kategorija(id):
     for id in kategorije_id:
         vrednosti_count += Vrednosti.query.filter_by(id_kategorije=id).count()
 
-
-    form = InputKategorijaForm()
+    form = InputVrednostForm()
     if form.validate_on_submit():
-        kategorija = Kategorije(ime_kategorije=form.ime.data, id_uporabnika=uporabnik.id)
-        if Kategorije.query.filter_by(ime_kategorije=form.ime.data, id_uporabnika=uporabnik.id).first() is not None:
-            flash('Kategorija s tem imenom že obstaja! Izberite drugo ime!')
-            return redirect(url_for('index'))
-        db.session.add(kategorija)
-        db.session.commit()
-        flash('Uspešno ste dodali novo kategorijo!')
-        return redirect(url_for('index'))
-
-    form2 = InputVrednostForm()
-    if form2.validate_on_submit():
-        nova_vrednost = Vrednosti(naziv=form2.naziv.data, vrednost=form2.vrednost.data,
-                                  id_kategorije=form2.kategorija.data.id_kategorije)
-        # if Vrednosti.query.filter_by(naziv=form2.naziv.data,
-        # id_kategorije=kategorija_izbira.id_kategorije).first() is not None:
-        # flash('Vrednost že obstaja! Uredite obstoječo ali ustvarite novo vrednost!')
-        #  return redirect(url_for('index'))
+        nova_vrednost = Vrednosti(naziv=form.naziv.data, vrednost=form.vrednost.data,
+                                  id_kategorije=form.kategorija.data.id_kategorije)
         db.session.add(nova_vrednost)
         db.session.commit()
         return redirect(url_for('index'))
-    return render_template('index.html', title='Domov', form=form, form2=form2, kategorije=kategorije_all,
+    return render_template('index.html', title='Domov', form=form, kategorije=kategorije_all,
                            vrednosti=vrednosti, kategorije_count=kategorije_count, kategorije_len=len(kategorije_count),
                            vrednosti_count=vrednosti_count)
+
+
+@app.route('/vrednost/<int:id>')
+@login_required
+def vrednost(id):
+    uporabnik = Uporabniki.query.filter_by(uporabnisko_ime=current_user.uporabnisko_ime).first()
+    kategorije_all = Kategorije.query.filter_by(id_uporabnika=uporabnik.id).all()
+    kategorije_id = []
+    vrednosti = Vrednosti.query.filter_by(id_kategorije=id).all()
+    kategorije_count = []
+    vrednosti_count = 0
+    vrednost_izbrana = Vrednosti.query.filter_by(id_vrednosti=id).first()
+
+    for kategorija in kategorije_all:
+        kategorije_id.append(kategorija.id_kategorije)
+        kategorije_count.append(Vrednosti.query.filter_by(id_kategorije=kategorija.id_kategorije).count())
+    for id in kategorije_id:
+        vrednosti_count += Vrednosti.query.filter_by(id_kategorije=id).count()
+
+    form = InputVrednostForm()
+    if form.validate_on_submit():
+        nova_vrednost = Vrednosti(naziv=form.naziv.data, vrednost=form.vrednost.data,
+                                  id_kategorije=form.kategorija.data.id_kategorije)
+        db.session.add(nova_vrednost)
+        db.session.commit()
+        return redirect(url_for('index'))
+    print(vrednost_izbrana)
+    return render_template('vrednost.html', title='Domov', form=form, kategorije=kategorije_all,
+                           vrednosti=vrednosti, kategorije_count=kategorije_count, kategorije_len=len(kategorije_count),
+                           vrednosti_count=vrednosti_count, vrednost_izbrana=vrednost_izbrana)

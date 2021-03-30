@@ -59,6 +59,7 @@ class Vrednosti(db.Model):
     id_vrednosti = db.Column(db.INTEGER, primary_key=True, autoincrement=True, nullable=False)
     naziv = db.Column(db.String(50), index=True)
     vrednost = db.Column(db.String(50), index=True)
+    priljubljeno = db.Column(db.Boolean, index=True)
     id_kategorije = db.Column(db.INTEGER, db.ForeignKey('kategorije.id_kategorije'))
 
     def __repr__(self):
@@ -67,4 +68,5 @@ class Vrednosti(db.Model):
     def __init__(self, naziv, vrednost, id_kategorije):
         self.naziv = naziv
         self.vrednost = vrednost
+        self.priljubljeno = False
         self.id_kategorije = id_kategorije

@@ -30,11 +30,6 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Prosimo uporabite drugačen elektronski naslov.')
 
 
-class InputKategorijaForm(FlaskForm):
-    ime = StringField('Naslov kategorije', validators=[DataRequired()])
-    submit = SubmitField('Vnesi')
-
-
 class InputVrednostForm(FlaskForm):
     naziv = StringField('Naslov vrednosti', validators=[DataRequired()])
     vrednost = StringField('Vrednost', validators=[DataRequired()])

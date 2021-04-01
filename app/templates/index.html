@@ -6,7 +6,7 @@
         <div class="row justify-content-start">
             <div class="col" id="containerLeft">
                 {% for vrednost in vrednosti %}
-                    <a href="{{ url_for('vrednost', id=vrednost.id_vrednosti) }}">
+                    <a href="{{ url_for('vrednost', id2=vrednost.id_vrednosti) }}">
                         <div class="vrednost">
                             <img src="{{ url_for('static', filename='icons/black/car.png') }}" width="55" height="20" alt="ikona">
                             {{ vrednost.naziv }}

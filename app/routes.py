@@ -87,9 +87,12 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/kategorija/<int:id>')
+@app.route('/kategorija')
 @login_required
-def kategorija(id):
+def kategorija():
+    id = request.args.get('id', None)
+    id2 = request.args.get('id2', None)
+
     uporabnik = Uporabniki.query.filter_by(uporabnisko_ime=current_user.uporabnisko_ime).first()
     kategorije_all = Kategorije.query.filter_by(id_uporabnika=uporabnik.id).all()
     kategorije_id = []
@@ -115,22 +118,30 @@ def kategorija(id):
                            vrednosti_count=vrednosti_count)
 
 
-@app.route('/vrednost/<int:id>')
+@app.route('/vrednost')
 @login_required
-def vrednost(id):
+def vrednost():
+    id = request.args.get('id', None)
+    id2 = request.args.get('id2', None)
+
     uporabnik = Uporabniki.query.filter_by(uporabnisko_ime=current_user.uporabnisko_ime).first()
     kategorije_all = Kategorije.query.filter_by(id_uporabnika=uporabnik.id).all()
     kategorije_id = []
-    vrednosti = Vrednosti.query.filter_by(id_kategorije=id).all()
     kategorije_count = []
     vrednosti_count = 0
-    vrednost_izbrana = Vrednosti.query.filter_by(id_vrednosti=id).first()
+    vrednost_izbrana = Vrednosti.query.filter_by(id_vrednosti=id2).first()
+
+    if id is not None:
+        vrednosti = Vrednosti.query.all()
+    else:
+        vrednosti = Vrednosti.query.all()
 
     for kategorija in kategorije_all:
         kategorije_id.append(kategorija.id_kategorije)
         kategorije_count.append(Vrednosti.query.filter_by(id_kategorije=kategorija.id_kategorije).count())
-    for id in kategorije_id:
-        vrednosti_count += Vrednosti.query.filter_by(id_kategorije=id).count()
+    if id is not None:
+        for id in kategorije_id:
+            vrednosti_count += Vrednosti.query.filter_by(id_kategorije=id).count()
 
     form = InputVrednostForm()
     if form.validate_on_submit():
@@ -139,7 +150,6 @@ def vrednost(id):
         db.session.add(nova_vrednost)
         db.session.commit()
         return redirect(url_for('index'))
-    print(vrednost_izbrana)
     return render_template('vrednost.html', title='Domov', form=form, kategorije=kategorije_all,
                            vrednosti=vrednosti, kategorije_count=kategorije_count, kategorije_len=len(kategorije_count),
                            vrednosti_count=vrednosti_count, vrednost_izbrana=vrednost_izbrana)

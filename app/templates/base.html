@@ -12,19 +12,6 @@
 		<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
 		<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 		<link rel="stylesheet" href="{{ url_for('static',filename='base.css') }}">
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<script type=text/javascript>
-				$(function() {
-				  $('li#kategorija1').on('click', function(e) {
-					e.preventDefault()
-					$.getJSON('/filter_vnosi',
-						function(data) {
-					  		console.log(data);
-					});
-					return false;
-				  });
-				});
-		</script>
 	</head>
 	<body>
 		 <div class="grid-container">
@@ -55,7 +42,7 @@
 						{% set kategorija = kategorije[loop.index-1] %}
 						{% set kategorije_count = kategorije_count[loop.index-1] %}
 
-						<a href="{{ url_for('kategorija', id=kategorija.id_kategorije) }}"><li class="sidenav__list-item" >
+						<a href="{{ url_for('kategorija', id=kategorija.id_kategorije, id2=i.id_vrednosti) }}"><li class="sidenav__list-item" >
 							{{ kategorija.ime_kategorije }}
 							<span class="align_right">{{ kategorije_count }}</span>
 						</li></a>
@@ -108,6 +95,26 @@
 				var addValue = document.getElementById("addValue");
 				var btn = document.getElementById("addValueBtn");
 				var close = document.getElementsByClassName("close")[0];
+
+				btn.onclick = function() {
+				    addValue.style.display = "block";
+				}
+
+				close.onclick = function() {
+					addValue.style.display = "none";
+				}
+
+				window.onclick = function(event) {
+				  	if (event.target === addValue) {
+						addValue.style.display = "none";
+				  	}
+				}
+			}
+
+			function editValue() {
+				const addValue = document.getElementById("addValue");
+				const btn = document.getElementById("editValueBtn");
+				const close = document.getElementsByClassName("close")[0];
 
 				btn.onclick = function() {
 				    addValue.style.display = "block";

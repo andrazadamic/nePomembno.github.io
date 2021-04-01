@@ -139,9 +139,8 @@ def vrednost():
     for kategorija in kategorije_all:
         kategorije_id.append(kategorija.id_kategorije)
         kategorije_count.append(Vrednosti.query.filter_by(id_kategorije=kategorija.id_kategorije).count())
-    if id is not None:
-        for id in kategorije_id:
-            vrednosti_count += Vrednosti.query.filter_by(id_kategorije=id).count()
+    for id in kategorije_id:
+        vrednosti_count += Vrednosti.query.filter_by(id_kategorije=id).count()
 
     form = InputVrednostForm()
     if form.validate_on_submit():

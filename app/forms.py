@@ -1,38 +1,38 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
-from app.models import Uporabniki, kategorije_query, kategorije_query2
+from app.models import Users, categories_query
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Uporabniško ime', validators=[DataRequired()])
-    password = PasswordField('Geslo', validators=[DataRequired()])
-    submit = SubmitField('PRIJAVA')
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('LOGIN')
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Uporabniško ime', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Geslo', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField(
-        'Ponovi geslo', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('REGISTRACIJA')
+        'Repeat password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('REGISTRATION')
 
     def validate_username(self, username):
-        user = Uporabniki.query.filter_by(uporabnisko_ime=username.data).first()
+        user = Users.query.filter_by(username=username.data).first()
         if user is not None:
-            raise ValidationError('Prosimo uporabite drugo uporabniško ime.')
+            raise ValidationError('Please enter different username.')
 
     def validate_email(self, email):
-        user = Uporabniki.query.filter_by(e_naslov=email.data).first()
+        user = Users.query.filter_by(email=email.data).first()
         if user is not None:
-            raise ValidationError('Prosimo uporabite drugačen elektronski naslov.')
+            raise ValidationError('Please enter different email address.')
 
 
-class InputVrednostForm(FlaskForm):
-    naziv = StringField('Naslov vrednosti', validators=[DataRequired()])
-    vrednost = StringField('Vrednost', validators=[DataRequired()])
-    kategorija = QuerySelectField('Kategorija', query_factory=kategorije_query,
-                                  allow_blank=True, get_label='ime_kategorije')
-    submit = SubmitField('Vnesi')
+class InputValueForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    value = StringField('Value', validators=[DataRequired()])
+    category = QuerySelectField('Category', query_factory=categories_query,
+                                  allow_blank=True, get_label='category_name')
+    submit = SubmitField('Submit')

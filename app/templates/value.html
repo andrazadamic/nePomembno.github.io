@@ -1,0 +1,11 @@
+{% extends "index.html" %}
+
+{% block div %}
+    <div>
+        <h2>{{ chosen_value.title }}</h2>
+        <a id="editValueBtn" class="btn btn-dark" onclick="editValue()">Edit</a>
+        <a class="btn btn-dark" onclick="deleteValue()">Delete</a>
+        <hr>
+        {{ chosen_value.value}}
+    </div>
+{% endblock %}

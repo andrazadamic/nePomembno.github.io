@@ -5,12 +5,13 @@ from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
 from app.models import Users, categories_query
 
 
+#* Login page
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('LOGIN')
 
-
+#* Registration page
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -19,17 +20,19 @@ class RegistrationForm(FlaskForm):
         'Repeat password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('REGISTRATION')
 
+    # Check if username already exists
     def validate_username(self, username):
         user = Users.query.filter_by(username=username.data).first()
         if user is not None:
             raise ValidationError('Please enter different username.')
 
+    #Check if email already in use
     def validate_email(self, email):
         user = Users.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please enter different email address.')
 
-
+#* Note creation form
 class InputValueForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     value = StringField('Value', validators=[DataRequired()])

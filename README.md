@@ -20,6 +20,9 @@ pip install -r requirements.txt
 flask run
 ```
 
+5. If you want to run app from Pycharm, here is the right setup for run configuration
+![Run configuration screenshot](https://i.ibb.co/D4SfPTD/Screenshot-from-2022-02-23-11-25-57.png)
+
 ---
 
 ## Contribute to the project
@@ -33,5 +36,4 @@ flask run
 ---
 
 ## Known problems
- - When viewing entries, you are unable to add new ones
  - When you view all entries, you see entries from other users too

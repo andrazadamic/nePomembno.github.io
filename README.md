@@ -36,4 +36,5 @@ flask run
 ---
 
 ## Known problems
+ - When viewing entries, you are unable to add new ones
  - When you view all entries, you see entries from other users too
